@@ -59,13 +59,13 @@ void SystemClock_Config(void);
 extern DMEM_STATE DMEMS;
 MimiObj * New_MYROOT(Args *args)
 {
-	/*	Derive from the base object class .
-		BaseObj is the smallest object that can 
-		import sub object.		*/	
-		MimiObj *self = New_baseObj(args);
-		obj_import(self, "LED1", New_LED1);
-		obj_newObj(self, "led1", "LED1");
-		return self;
+  /*  Derive from the base object class .
+    BaseObj is the smallest object that can 
+    import sub object.    */  
+    MimiObj *self = New_baseObj(args);
+    obj_import(self, "LED", New_LED);
+    obj_newObj(self, "led", "LED");
+    return self;
 }
 /* USER CODE END 0 */
 
@@ -109,9 +109,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    obj_run(root, "led1.on()");
+    obj_run(root, "led.led1on()");
+    obj_run(root, "led.led2on()");
     HAL_Delay(500);
-    obj_run(root, "led1.off()");
+    obj_run(root, "led.led1off()");
+    obj_run(root, "led.led2off()");
     HAL_Delay(500);
     printf("memory used max=%0.2f KB\r\n",DMEMS.maxNum*DMEM_BLOCK_SIZE/1024.0);
     printf("memory used now=%0.2f KB\r\n",DMEMS.blk_num*DMEM_BLOCK_SIZE/1024.0);
