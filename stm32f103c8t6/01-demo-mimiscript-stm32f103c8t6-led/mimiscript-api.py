@@ -6,5 +6,3 @@ class LED(TinyObj):
 
 class MyRoot(BaseObj):
     led = LED()
-    def reboot():
-        pass

@@ -66,11 +66,6 @@ void LED_on(MimiObj *self)
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 }
 
-void MyRoot_reboot(MimiObj *self)
-{
-	
-}
-
 
 /* USER CODE END 0 */
 

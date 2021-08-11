@@ -15,5 +15,3 @@ class Uart(TinyObj):
 class MyRoot(BaseObj):
     led = LED()
     uart = Uart()
-    def reboot():
-        pass

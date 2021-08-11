@@ -27,5 +27,3 @@ class MyRoot(BaseObj):
     led = LED()
     uart = Uart()
     mem = MemoryChecker()
-    def reboot():
-        pass

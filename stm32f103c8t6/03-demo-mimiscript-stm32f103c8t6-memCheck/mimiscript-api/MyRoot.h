@@ -5,5 +5,4 @@
 #include <stdio.h>
 #include <stdlib.h>
 MimiObj *New_MyRoot(Args *args);
-void MyRoot_reboot(MimiObj *self);
 #endif
