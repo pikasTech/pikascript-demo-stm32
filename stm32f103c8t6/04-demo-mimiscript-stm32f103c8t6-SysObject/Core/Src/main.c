@@ -111,6 +111,8 @@ void obj_runWithInfo(MimiObj *self, char *cmd)
 		printf("\r\n");
 }
 
+
+char inputBuff[256] = {0};
 /* USER CODE END 0 */
 
 /**
@@ -144,7 +146,6 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 	/* user input buff */
-	char inputBuff[256] = {0};
 	MimiObj *root = newRootObj("root",New_MyRoot);
 	obj_runWithInfo(root, "print('hello world')");
 	obj_runWithInfo(root, "ls()");
@@ -166,6 +167,11 @@ int main(void)
 	obj_runWithInfo(root, "del('mem')");
 	
 	obj_runWithInfo(root, "set('a',1)");
+	obj_runWithInfo(root, "print(a)");
+	obj_runWithInfo(root, "type('a')");
+	obj_runWithInfo(root, "del('a')");
+
+	obj_runWithInfo(root, "set('a',1.1)");
 	obj_runWithInfo(root, "print(a)");
 	obj_runWithInfo(root, "type('a')");
 	obj_runWithInfo(root, "del('a')");
