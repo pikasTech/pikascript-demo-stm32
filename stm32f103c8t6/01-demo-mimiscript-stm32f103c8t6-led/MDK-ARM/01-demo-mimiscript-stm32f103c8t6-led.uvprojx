@@ -137,7 +137,7 @@
             <DriverSelection>4101</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
-          <Flash2>BIN\UL2V8M.DLL</Flash2>
+          <Flash2>BIN\UL2CM3.DLL</Flash2>
           <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xB</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\mimiscript-core\include;..\mimiscript-api</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\mimiscript-core;..\mimiscript-api</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -532,11 +532,6 @@
               <FileName>dataLinkNode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\mimiscript-core\dataLinkNode.c</FilePath>
-            </File>
-            <File>
-              <FileName>dataLog.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\mimiscript-core\dataLog.c</FilePath>
             </File>
             <File>
               <FileName>dataMemory.c</FileName>

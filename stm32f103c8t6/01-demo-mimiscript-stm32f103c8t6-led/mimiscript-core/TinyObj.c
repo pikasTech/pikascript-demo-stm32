@@ -16,7 +16,7 @@ MimiObj *New_TinyObj(Args *args)
     DMEM *mem = DynMemGet(sizeof(MimiObj));
     if (NULL == mem)
     {
-     //   printf("[error] memory is empty!");
+        printf("[error] memory is empty!");
         while (1)
             ;
     }

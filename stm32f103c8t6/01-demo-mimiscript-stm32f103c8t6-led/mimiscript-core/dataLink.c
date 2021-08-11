@@ -76,10 +76,10 @@ void link_removeNode(Link *self, void *contant)
     return;
 }
 
-int link_getSize(Link *self)
+int32_t link_getSize(Link *self)
 {
     LinkNode *NowNode;
-    int size = 0;
+   int32_t size = 0;
     NowNode = self->firstNode;
     while (NULL != NowNode)
     {
@@ -89,7 +89,7 @@ int link_getSize(Link *self)
     return size;
 }
 
-LinkNode *link_getNode(Link *self, long long id)
+LinkNode *link_getNode(Link *self, int64_t id)
 {
     LinkNode *nodeNow = self->firstNode;
     while (1)

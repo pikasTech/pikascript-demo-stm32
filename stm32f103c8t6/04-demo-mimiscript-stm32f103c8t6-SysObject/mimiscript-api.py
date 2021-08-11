@@ -11,7 +11,6 @@ class Uart(TinyObj):
         pass
     def printName():
         pass
-
 class MemoryChecker(TinyObj):
     # check memory used now
     def now():
@@ -27,5 +26,3 @@ class MyRoot(SysObj):
     LED()
     MemoryChecker()
     Uart()
-    def reboot():
-        pass
