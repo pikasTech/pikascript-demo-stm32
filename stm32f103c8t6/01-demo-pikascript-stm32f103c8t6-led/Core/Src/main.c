@@ -100,16 +100,19 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-    PikaObj *root = newRootObj("root",New_MyRoot);
+  PikaObj *root = newRootObj("root",New_MyRoot);
+  printf("memory used now: %0.2f kB\r\n", pikaMemNow()/1024.0);
+  printf("memory used max: %0.2f kB\r\n", pikaMemMax()/1024.0);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		HAL_Delay(50);
+		HAL_Delay(20);
 		obj_run(root, "led.on()");
-		HAL_Delay(50);
+		HAL_Delay(20);
 		obj_run(root, "led.off()");
 
     /* USER CODE END WHILE */
