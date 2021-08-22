@@ -103,7 +103,6 @@ void obj_runWithInfo(PikaObj *self, char *cmd)
 {
 		printf(">>> %s\r\n", cmd);
 		obj_run(self, cmd);
-		printf("\r\n");
 }
 
 
@@ -156,7 +155,28 @@ int main(void)
 	obj_runWithInfo(root, "led.on()");
 	obj_runWithInfo(root, "type('led')");
 	obj_runWithInfo(root, "del('led')");
-    
+
+	obj_runWithInfo(root, "set('a',1)");
+	obj_runWithInfo(root, "print(a)");
+	obj_runWithInfo(root, "type('a')");
+	obj_runWithInfo(root, "del('a')");
+
+	obj_runWithInfo(root, "set('a',1.1)");
+	obj_runWithInfo(root, "print(a)");
+	obj_runWithInfo(root, "type('a')");
+	obj_runWithInfo(root, "del('a')");
+
+	obj_runWithInfo(root, "set('a','test')");
+	obj_runWithInfo(root, "print(a)");
+	obj_runWithInfo(root, "type('a')");
+	obj_runWithInfo(root, "del('a')");
+
+	obj_runWithInfo(root, "set('a',1)");
+	obj_runWithInfo(root, "set('b',a)");
+	obj_runWithInfo(root, "print(b)");
+	obj_runWithInfo(root, "del('a')");
+	obj_runWithInfo(root, "del('b')");
+
 	obj_runWithInfo(root, "ls()");
 	obj_runWithInfo(root, "mem.now()");
 	obj_runWithInfo(root, "del('mem')");
