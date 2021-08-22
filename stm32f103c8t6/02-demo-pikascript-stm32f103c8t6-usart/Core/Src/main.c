@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "MimiObj.h"
+#include "PikaObj.h"
 #include "MyRoot.h"
 #include "SysObj.h"
 /* USER CODE END Includes */
@@ -58,17 +58,17 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void LED_off(MimiObj *self)
+void LED_off(PikaObj *self)
 {
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 }
-void LED_on(MimiObj *self)
+void LED_on(PikaObj *self)
 {
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 }
 
 
-void Uart_printName(MimiObj *self)
+void Uart_printName(PikaObj *self)
 {
 		char *name = obj_getStr(self, "name");
 		if(NULL == name)
@@ -80,12 +80,12 @@ void Uart_printName(MimiObj *self)
 		printf("%s\r\n", name);
 }
 
-void Uart_setName(MimiObj *self, char * name)
+void Uart_setName(PikaObj *self, char * name)
 {
 		obj_setStr(self, "name", name);
 }
 
-void Uart_send(MimiObj *self, char * data)
+void Uart_send(PikaObj *self, char * data)
 {
 		printf("[uart1]: %s\r\n", data);
 }
@@ -124,7 +124,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	/* user input buff */
 	char inputBuff[256] = {0};
-	MimiObj *root = newRootObj("root",New_MyRoot);
+	PikaObj *root = newRootObj("root",New_MyRoot);
 	
 	obj_run(root, "uart.setName('com1')");
 	obj_run(root, "uart.send('My name is:')");

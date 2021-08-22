@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "MimiObj.h"
+#include "PikaObj.h"
 #include "MyRoot.h"
 #include "SysObj.h"
 /* USER CODE END Includes */
@@ -58,16 +58,16 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void LED_off(MimiObj *self)
+void LED_off(PikaObj *self)
 {
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 }
-void LED_on(MimiObj *self)
+void LED_on(PikaObj *self)
 {
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 }
 
-void Uart_printName(MimiObj *self)
+void Uart_printName(PikaObj *self)
 {
 		char *name = obj_getStr(self, "name");
 		if(NULL == name)
@@ -79,29 +79,24 @@ void Uart_printName(MimiObj *self)
 		printf("%s\r\n", name);
 }
 
-void Uart_setName(MimiObj *self, char * name)
+void Uart_setName(PikaObj *self, char * name)
 {
 		obj_setStr(self, "name", name);
 }
 
-void Uart_send(MimiObj *self, char * data)
+void Uart_send(PikaObj *self, char * data)
 {
 		printf("[uart1]: %s\r\n", data);
 }
 
-extern DMEM_STATE DMEMS;
-void MemoryChecker_size(MimiObj *self)
+void MemoryChecker_max(PikaObj *self)
 {
-		printf("memory loop size = %0.2f kB\r\n", DMEM_TOTAL_SIZE / 1024.0);
-}
-void MemoryChecker_max(MimiObj *self)
-{
-		printf("memory used max = %0.2f kB\r\n", DMEMS.maxNum * DMEM_BLOCK_SIZE / 1024.0);
+		printf("memory used max = %0.2f kB\r\n", pikaMemMax() / 1024.0);
 
 }
-void MemoryChecker_now(MimiObj *self)
+void MemoryChecker_now(PikaObj *self)
 {
-		printf("memory used now = %0.2f kB\r\n", DMEMS.blk_num * DMEM_BLOCK_SIZE / 1024.0);
+		printf("memory used now = %0.2f kB\r\n", pikaMemNow() / 1024.0);
 }
 
 /* USER CODE END 0 */
@@ -138,9 +133,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	/* user input buff */
 	char inputBuff[256] = {0};
-	MimiObj *root = newRootObj("root",New_MyRoot);
+	PikaObj *root = newRootObj("root",New_MyRoot);
 	
-	obj_run(root, "mem.size()");
 	obj_run(root, "mem.max()");
 	obj_run(root, "mem.now()");
 	

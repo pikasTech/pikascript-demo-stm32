@@ -4,13 +4,16 @@
 
 void link_deinit(Link *self)
 {
-    DynMemPut(self->mem);
     LinkNode *nowNode = self->firstNode;
     while (NULL != nowNode)
     {
+        LinkNode *nodeNext = nowNode->nextNode;
         linkNode_deinit(nowNode);
-        nowNode = nowNode->nextNode;
+        nowNode = nodeNext;
     }
+    // DynMemPut(self->mem);
+    pikaFree(self, self->memSize);
+    self = NULL;
 }
 
 void link_addNode(Link *self, void *contant, void (*_contantDinit)(void *contant))
@@ -56,7 +59,7 @@ void link_removeNode(Link *self, void *contant)
 
     LinkNode *nextNode = nodeToDelete->nextNode;
     LinkNode *priorNode = nodeToDelete->priorNode;
-    if(nodeToDelete == self->firstNode)
+    if (nodeToDelete == self->firstNode)
     {
         self->firstNode = nodeToDelete->nextNode;
     }
@@ -79,7 +82,7 @@ void link_removeNode(Link *self, void *contant)
 int32_t link_getSize(Link *self)
 {
     LinkNode *NowNode;
-   int32_t size = 0;
+    int32_t size = 0;
     NowNode = self->firstNode;
     while (NULL != NowNode)
     {
@@ -119,9 +122,8 @@ void link_init(Link *self, void *args)
 
 Link *New_link(void *args)
 {
-    DMEM *mem = DynMemGet(sizeof(Link));
-    Link *self = (void *)(mem->addr);
-    self->mem = mem;
+    Link *self = pikaMalloc(sizeof(Link));
+    self->memSize = sizeof(Link);
     link_init(self, args);
     return self;
 }

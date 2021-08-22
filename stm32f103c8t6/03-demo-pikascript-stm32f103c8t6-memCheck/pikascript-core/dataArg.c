@@ -7,71 +7,77 @@
 
 void arg_deinit(Arg *self)
 {
-    DynMemPut(self->mem);
-    if (NULL != self->contantDynMem)
+    if (NULL != self->content)
     {
-        DynMemPut(self->contantDynMem);
+        pikaFree(self->content, self->contentSize);
+        self->content = NULL;
+        self->contentSize = 0;
     }
-    if (NULL != self->nameDynMem)
+    if (NULL != self->name)
     {
-        DynMemPut(self->nameDynMem);
+        pikaFree(self->name, strGetSize((char *)self->name) + 1);
+        self->name = NULL;
     }
-    if (NULL != self->typeDynMem)
+    if (NULL != self->type)
     {
-        DynMemPut(self->typeDynMem);
+        pikaFree(self->type, strGetSize((char *)self->type) + 1);
+        self->type = NULL;
     }
+
+    pikaFree(self, self->memSize);
+    self = NULL;
 }
 
 void arg_newContant(Arg *self, uint32_t size)
 {
-    self->contantDynMem = DynMemGet((size + 1) * sizeof(char));
-    for (uint32_t i = 0; i < size + 1; i++)
+    self->content = pikaMalloc(size);
+    self->contentSize = size;
+    for (uint32_t i = 0; i < size; i++)
     {
-        self->contantDynMem->addr[i] = 0;
+        self->content[i] = 0;
     }
 }
 
 void arg_setContant(Arg *self, uint8_t *contant, uint32_t size)
 {
-    if (NULL != self->contantDynMem)
+    if (NULL != self->content)
     {
-        DynMemPut(self->contantDynMem);
+        pikaFree(self->content, self->contentSize);
+        self->content = NULL;
+        self->contentSize = 0;
     }
-    self->contantDynMem = DynMemGet((size + 1) * sizeof(char));
-    memcpy(self->contantDynMem->addr, contant, size + 1);
+    self->content = pikaMalloc(size);
+    self->contentSize = size;
+    memcpy(self->content, contant, size);
 }
 
 void arg_setName(Arg *self, char *name)
 {
     uint32_t size = strGetSize(name);
-    if (NULL != self->nameDynMem)
+    if (NULL != self->name)
     {
-        DynMemPut(self->nameDynMem);
+        pikaFree(self->name, strGetSize((char *)self->name) + 1);
     }
-    self->nameDynMem = DynMemGet((size + 1) * sizeof(char));
+    self->name = pikaMalloc(size + 1);
     // size + 1 to contain \0
-    memcpy(self->nameDynMem->addr, name, size + 1);
+    memcpy(self->name, name, size + 1);
 }
 
 void arg_setType(Arg *self, char *type)
 {
     uint32_t size = strGetSize(type);
-    if (NULL != self->typeDynMem)
+    if (NULL != self->type)
     {
-        DynMemPut(self->typeDynMem);
+        pikaFree(self->type, strGetSize((char *)self->type) + 1);
+        self->type = NULL;
     }
-    self->typeDynMem = DynMemGet((size + 1) * sizeof(char));
-    memcpy(self->typeDynMem->addr, type, size + 1);
+    self->type = pikaMalloc(size + 1);
+    memcpy(self->type, type, size + 1);
 }
 
-char *arg_getContant(Arg *self)
+uint8_t *arg_getContant(Arg *self)
 {
-    // return self->contactConst;
-    if (self->contantDynMem == NULL)
-    {
-        return NULL;
-    }
-    return (char *)self->contantDynMem->addr;
+    return self->content;
 }
 
 void arg_setInt(Arg *self, int64_t val)
@@ -101,13 +107,13 @@ void arg_setFloat(Arg *self, float val)
 
 float arg_getFloat(Arg *self)
 {
-    if (NULL == self->contantDynMem)
+    if (NULL == arg_getContant(self))
     {
         return -999.999;
     }
     float valOut = 0;
     uint8_t *valOutPtr = (uint8_t *)(&valOut);
-    uint8_t *valPtr = self->contantDynMem->addr;
+    uint8_t *valPtr = arg_getContant(self);
     for (uint32_t i = 0; i < 4; i++)
     {
         valOutPtr[i] = valPtr[i];
@@ -130,12 +136,12 @@ void arg_setPtr(Arg *self, void *pointer)
 
 void arg_setStr(Arg *self, char *string)
 {
-    arg_setContant(self, (uint8_t *)string, strGetSize(string));
+    arg_setContant(self, (uint8_t *)string, strGetSize(string) + 1);
 }
 
 int64_t arg_getInt(Arg *self)
 {
-    if (NULL == self->contantDynMem)
+    if (NULL == arg_getContant(self))
     {
         return -999999;
     }
@@ -144,7 +150,7 @@ int64_t arg_getInt(Arg *self)
     {
         // add 0x30 to avoid 0
         int64Temp = (int64Temp << 8);
-        int64Temp += (self->contantDynMem->addr)[i];
+        int64Temp += arg_getContant(self)[i];
     }
     return int64Temp;
 }
@@ -153,11 +159,11 @@ void *arg_getPtr(Arg *self)
 {
     void *pointer = NULL;
     uint64_t pointerTemp = 0;
-    if (NULL == self->contantDynMem)
+    if (NULL == arg_getContant(self))
     {
         return NULL;
     }
-    uint8_t *contant = self->contantDynMem->addr;
+    uint8_t *contant = arg_getContant(self);
     for (int32_t i = 7; i > -1; i--)
     {
         // avoid \0
@@ -170,46 +176,31 @@ void *arg_getPtr(Arg *self)
 }
 char *arg_getStr(Arg *self)
 {
-    return arg_getContant(self);
+    return (char *)arg_getContant(self);
 }
 void arg_init(Arg *self, void *voidPointer)
 {
     /* attribute */
-    self->context = self;
-    self->contantDynMem = NULL;
-    self->nameDynMem = NULL;
-    self->typeDynMem = NULL;
-
-    /* operation */
-
-    /* object */
-
-    /* override */
+    self->content = NULL;
+    self->name = NULL;
+    self->type = NULL;
+    self->contentSize = 0;
 }
 
 char *arg_getName(Arg *self)
 {
-    if (self->nameDynMem == NULL)
-    {
-        return NULL;
-    }
-    return (char *)self->nameDynMem->addr;
+    return (char *)self->name;
 }
 
 char *arg_getType(Arg *self)
 {
-    if (self->typeDynMem == NULL)
-    {
-        return NULL;
-    }
-    return (char *)self->typeDynMem->addr;
+    return (char *)self->type;
 }
 
 Arg *New_arg(void *voidPointer)
 {
-    DMEM *mem = DynMemGet(sizeof(Arg));
-    Arg *self = (void *)(mem->addr);
-    self->mem = mem;
+    Arg *self = pikaMalloc(sizeof(Arg));
+    self->memSize = sizeof(Arg);
     arg_init(self, voidPointer);
     return self;
 }
@@ -217,7 +208,7 @@ Arg *New_arg(void *voidPointer)
 Arg *arg_copy(Arg *argToBeCopy)
 {
     Arg *argCopied = New_arg(NULL);
-    arg_setContant(argCopied, argToBeCopy->contantDynMem->addr, argToBeCopy->contantDynMem->size);
+    arg_setContant(argCopied, arg_getContant(argToBeCopy), argToBeCopy->contentSize);
     arg_setName(argCopied, arg_getName(argToBeCopy));
     arg_setType(argCopied, arg_getType(argToBeCopy));
     return argCopied;

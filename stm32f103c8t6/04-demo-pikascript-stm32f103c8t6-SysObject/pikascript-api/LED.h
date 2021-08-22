@@ -5,11 +5,11 @@
 #define __LED__H
 #include <stdio.h>
 #include <stdlib.h>
-#include "MimiObj.h"
+#include "PikaObj.h"
 
-MimiObj *New_LED(Args *args);
+PikaObj *New_LED(Args *args);
 
-void LED_off(MimiObj *self);
-void LED_on(MimiObj *self);
+void LED_off(PikaObj *self);
+void LED_on(PikaObj *self);
 
 #endif

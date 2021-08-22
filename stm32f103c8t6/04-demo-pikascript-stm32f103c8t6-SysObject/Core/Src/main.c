@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "MimiObj.h"
+#include "PikaObj.h"
 #include "MyRoot.h"
 #include "SysObj.h"
 /* USER CODE END Includes */
@@ -58,16 +58,16 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void LED_off(MimiObj *self)
+void LED_off(PikaObj *self)
 {
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 }
-void LED_on(MimiObj *self)
+void LED_on(PikaObj *self)
 {
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 }
 
-void Uart_printName(MimiObj *self)
+void Uart_printName(PikaObj *self)
 {
 		char *name = obj_getStr(self, "name");
 		if(NULL == name)
@@ -79,32 +79,27 @@ void Uart_printName(MimiObj *self)
 		printf("%s\r\n", name);
 }
 
-void Uart_setName(MimiObj *self, char * name)
+void Uart_setName(PikaObj *self, char * name)
 {
 		obj_setStr(self, "name", name);
 }
 
-void Uart_send(MimiObj *self, char * data)
+void Uart_send(PikaObj *self, char * data)
 {
 		printf("[uart1]: %s\r\n", data);
 }
 
-extern DMEM_STATE DMEMS;
-void MemoryChecker_size(MimiObj *self)
+void MemoryChecker_max(PikaObj *self)
 {
-		printf("memory loop size = %0.2f kB\r\n", DMEM_TOTAL_SIZE / 1024.0);
-}
-void MemoryChecker_max(MimiObj *self)
-{
-		printf("memory used max = %0.2f kB\r\n", DMEMS.maxNum * DMEM_BLOCK_SIZE / 1024.0);
+		printf("memory used max = %0.2f kB\r\n", pikaMemMax() / 1024.0);
 
 }
-void MemoryChecker_now(MimiObj *self)
+void MemoryChecker_now(PikaObj *self)
 {
-		printf("memory used now = %0.2f kB\r\n", DMEMS.blk_num * DMEM_BLOCK_SIZE / 1024.0);
+		printf("memory used now = %0.2f kB\r\n", pikaMemNow() / 1024.0);
 }
 
-void obj_runWithInfo(MimiObj *self, char *cmd)
+void obj_runWithInfo(PikaObj *self, char *cmd)
 {
 		printf(">>> %s\r\n", cmd);
 		obj_run(self, cmd);
@@ -146,7 +141,7 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 	/* user input buff */
-	MimiObj *root = newRootObj("root",New_MyRoot);
+	PikaObj *root = newRootObj("root",New_MyRoot);
 	obj_runWithInfo(root, "print('hello world')");
 	obj_runWithInfo(root, "ls()");
 	obj_runWithInfo(root, "ls('__classLoader')");
@@ -160,32 +155,11 @@ int main(void)
 	obj_runWithInfo(root, "mem.now()");
 	obj_runWithInfo(root, "led.on()");
 	obj_runWithInfo(root, "type('led')");
-	
 	obj_runWithInfo(root, "del('led')");
+    
 	obj_runWithInfo(root, "ls()");
 	obj_runWithInfo(root, "mem.now()");
 	obj_runWithInfo(root, "del('mem')");
-	
-	obj_runWithInfo(root, "set('a',1)");
-	obj_runWithInfo(root, "print(a)");
-	obj_runWithInfo(root, "type('a')");
-	obj_runWithInfo(root, "del('a')");
-
-	obj_runWithInfo(root, "set('a',1.1)");
-	obj_runWithInfo(root, "print(a)");
-	obj_runWithInfo(root, "type('a')");
-	obj_runWithInfo(root, "del('a')");
-
-	obj_runWithInfo(root, "set('a','test')");
-	obj_runWithInfo(root, "print(a)");
-	obj_runWithInfo(root, "type('a')");
-	obj_runWithInfo(root, "del('a')");
-	
-	obj_runWithInfo(root, "set('a',1)");
-	obj_runWithInfo(root, "set('b',a)");
-	obj_runWithInfo(root, "print(b)");
-	obj_runWithInfo(root, "del('a')");
-	obj_runWithInfo(root, "del('b')");
 
 	obj_runWithInfo(root, "new('mem', 'MemoryChecker')");
 	obj_runWithInfo(root, "mem.max()");

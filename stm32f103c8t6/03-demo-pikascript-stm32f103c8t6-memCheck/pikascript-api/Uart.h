@@ -5,12 +5,12 @@
 #define __Uart__H
 #include <stdio.h>
 #include <stdlib.h>
-#include "MimiObj.h"
+#include "PikaObj.h"
 
-MimiObj *New_Uart(Args *args);
+PikaObj *New_Uart(Args *args);
 
-void Uart_printName(MimiObj *self);
-void Uart_send(MimiObj *self, char * data);
-void Uart_setName(MimiObj *self, char * name);
+void Uart_printName(PikaObj *self);
+void Uart_send(PikaObj *self, char * data);
+void Uart_setName(PikaObj *self, char * name);
 
 #endif

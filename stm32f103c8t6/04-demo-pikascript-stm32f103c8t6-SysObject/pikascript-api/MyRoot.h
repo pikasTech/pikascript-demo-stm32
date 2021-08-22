@@ -5,9 +5,9 @@
 #define __MyRoot__H
 #include <stdio.h>
 #include <stdlib.h>
-#include "MimiObj.h"
+#include "PikaObj.h"
 
-MimiObj *New_MyRoot(Args *args);
+PikaObj *New_MyRoot(Args *args);
 
 
 #endif

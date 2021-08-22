@@ -3,8 +3,10 @@
 
 void linkNode_deinit(LinkNode *self)
 {
-    DynMemPut(self->mem);
     self->_contantDinit(self->contant);
+    // DynMemPut(self->mem);
+    pikaFree(self, self->memSize);
+    self = NULL;
 }
 
 int64_t linkNode_getId(LinkNode *self)
@@ -24,10 +26,8 @@ int32_t linkNode_isId(LinkNode *self, int64_t id)
 void linkNode_init(LinkNode *self, void *args)
 {
     /* attribute */
-    self->priorNode = NULL;
     self->nextNode = NULL;
     self->id = 0;
-
 
     /* object */
     self->contant = NULL;
@@ -38,9 +38,8 @@ void linkNode_init(LinkNode *self, void *args)
 
 LinkNode *New_linkNode(void *args)
 {
-    DMEM *mem = DynMemGet(sizeof(LinkNode));
-    LinkNode *self = (void *)(mem->addr);
-    self->mem = mem;
+    LinkNode *self = pikaMalloc(sizeof(LinkNode));
+    self->memSize = sizeof(LinkNode);
     linkNode_init(self, args);
     return self;
 }

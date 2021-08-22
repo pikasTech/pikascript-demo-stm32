@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "MimiObj.h"
+#include "PikaObj.h"
 #include "MyRoot.h"
 /* USER CODE END Includes */
 
@@ -57,11 +57,11 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void LED_off(MimiObj *self)
+void LED_off(PikaObj *self)
 {
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 }
-void LED_on(MimiObj *self)
+void LED_on(PikaObj *self)
 {
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 }
@@ -100,7 +100,7 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-	MimiObj *root = newRootObj("root",New_MyRoot);
+    PikaObj *root = newRootObj("root",New_MyRoot);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -113,7 +113,7 @@ int main(void)
 		obj_run(root, "led.off()");
 
     /* USER CODE END WHILE */
-		
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

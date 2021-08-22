@@ -6,12 +6,13 @@ typedef struct Class_arg Arg;
 struct Class_arg
 {
     /* attribute */
-    DMEM *mem;
     void *context;
+    uint16_t memSize;
 
-    DMEM *contantDynMem;
-    DMEM *nameDynMem;
-    DMEM *typeDynMem;
+    uint8_t *content;
+    uint16_t contentSize;
+    uint8_t *name;
+    uint8_t *type;
 };
 
 void arg_setName(Arg *self, char *name);
@@ -20,7 +21,7 @@ void arg_newContant(Arg *self, uint32_t size);
 void arg_setType(Arg *self, char *type);
 char *arg_getName(Arg *self);
 char *arg_getType(Arg *self);
-char *arg_getContant(Arg *self);
+uint8_t *arg_getContant(Arg *self);
 
 void arg_setInt(Arg *self, int64_t val);
 void arg_setFloat(Arg *self, float val);

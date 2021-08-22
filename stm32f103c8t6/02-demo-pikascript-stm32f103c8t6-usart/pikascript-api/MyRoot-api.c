@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include "BaseObj.h"
 
-MimiObj *New_MyRoot(Args *args){
-    MimiObj *self = New_BaseObj(args);
+PikaObj *New_MyRoot(Args *args){
+    PikaObj *self = New_BaseObj(args);
     obj_import(self, "LED", New_LED);
     obj_newObj(self, "led", "LED");
     obj_import(self, "Uart", New_Uart);

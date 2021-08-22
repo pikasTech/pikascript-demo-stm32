@@ -5,12 +5,11 @@
 #define __MemoryChecker__H
 #include <stdio.h>
 #include <stdlib.h>
-#include "MimiObj.h"
+#include "PikaObj.h"
 
-MimiObj *New_MemoryChecker(Args *args);
+PikaObj *New_MemoryChecker(Args *args);
 
-void MemoryChecker_max(MimiObj *self);
-void MemoryChecker_now(MimiObj *self);
-void MemoryChecker_size(MimiObj *self);
+void MemoryChecker_max(PikaObj *self);
+void MemoryChecker_now(PikaObj *self);
 
 #endif

@@ -9,8 +9,10 @@
 
 void args_deinit(Args *self)
 {
-    DynMemPut(self->mem);
+    // DynMemPut(self->mem);
     link_deinit(self->argLinkList);
+    pikaFree(self, self->memSize);
+    self = NULL;
 }
 
 char *getDefaultName(Args *self, char *strOut)
@@ -19,14 +21,14 @@ char *getDefaultName(Args *self, char *strOut)
     return strOut;
 }
 
-char *args_getStrByIndex(Args *self,int32_t index)
+char *args_getStrByIndex(Args *self, int32_t index)
 {
     Arg *arg = args_getArgByIndex(self, index);
     if (NULL == arg)
     {
         return NULL;
     }
-    return (char *)arg->contantDynMem->addr;
+    return (char *)arg_getContant(arg);
 }
 
 int32_t args_setStrWithDefaultName(Args *self, char *strIn)
@@ -57,7 +59,7 @@ int32_t args_setFloat(Args *self, char *name, float argFloat)
     return 0;
 }
 
-float args_getFloatByIndex(Args *self,int32_t index)
+float args_getFloatByIndex(Args *self, int32_t index)
 {
     float val = 0;
     Arg *arg = args_getArgByIndex(self, index);
@@ -65,7 +67,7 @@ float args_getFloatByIndex(Args *self,int32_t index)
     return val;
 }
 
-void *args_getPointerByIndex(Args *self,int32_t index)
+void *args_getPointerByIndex(Args *self, int32_t index)
 {
     void *pointer = NULL;
     Arg *arg = args_getArgByIndex(self, index);
@@ -88,7 +90,7 @@ void *args_getPtr(Args *self, char *name)
 
 int32_t args_setPtr(Args *self, char *name, void *argPointer)
 {
-   int32_t errCode = 0;
+    int32_t errCode = 0;
     Arg *argNew = New_arg(NULL);
     arg_setType(argNew, "pointer");
     arg_setName(argNew, name);
@@ -99,7 +101,7 @@ int32_t args_setPtr(Args *self, char *name, void *argPointer)
 
 int32_t args_setStr(Args *self, char *name, char *strIn)
 {
-   int32_t errCode = 0;
+    int32_t errCode = 0;
     Arg *argNew = New_arg(NULL);
     arg_setType(argNew, "str");
     arg_setStr(argNew, strIn);
@@ -112,15 +114,15 @@ void setArgDirect(Args *self, Arg *arg)
 {
     link_addNode(self->argLinkList,
                  arg,
-                 (void (*)(void *))arg_deinit);
+                 (contantDeinitFun)arg_deinit);
 }
 
-char *args_getBuff(Args *self,int32_t size)
+char *args_getBuff(Args *self, int32_t size)
 {
     Arg *argNew = New_arg(NULL);
-    arg_newContant(argNew, size);
+    arg_newContant(argNew, size + 1);
     setArgDirect(self, argNew);
-    return (char *)argNew->contantDynMem->addr;
+    return (char *)arg_getContant(argNew);
 }
 
 char *args_getStr(Args *self, char *name)
@@ -130,11 +132,11 @@ char *args_getStr(Args *self, char *name)
     {
         return NULL;
     }
-    if (NULL == arg->contantDynMem)
+    if (NULL == arg_getContant(arg))
     {
         return NULL;
     }
-    return (char *)arg->contantDynMem->addr;
+    return (char *)arg_getContant(arg);
 }
 
 int32_t args_setInt(Args *self, char *name, int64_t int64In)
@@ -147,7 +149,7 @@ int32_t args_setInt(Args *self, char *name, int64_t int64In)
     return 0;
 }
 
-int64_t args_getIntByIndex(Args *self,int32_t index)
+int64_t args_getIntByIndex(Args *self, int32_t index)
 {
     Arg *arg = args_getArgByIndex(self, index);
     if (NULL == arg)
@@ -180,10 +182,10 @@ char *args_getType(Args *self, char *name)
     {
         return NULL;
     }
-    return (char *)arg->typeDynMem->addr;
+    return arg_getType(arg);
 }
 
-Arg *args_getArgByIndex(Args *self,int32_t index)
+Arg *args_getArgByIndex(Args *self, int32_t index)
 {
     Arg *arg;
     if (index == -1)
@@ -202,6 +204,10 @@ Arg *args_getArgByIndex(Args *self,int32_t index)
 float args_getFloat(Args *self, char *name)
 {
     Arg *arg = args_getArg(self, name);
+    if (NULL == arg)
+    {
+        return -999999999.0;
+    }
     return arg_getFloat(arg);
 }
 
@@ -248,7 +254,7 @@ int32_t updateArg(Args *self, Arg *argNew)
         return 1;
         // type do not match
     }
-    arg_setContant(argOld, argNew->contantDynMem->addr, argNew->contantDynMem->size);
+    arg_setContant(argOld, arg_getContant(argNew), argNew->contentSize);
     arg_deinit(argNew);
     return 0;
 }
@@ -300,7 +306,7 @@ void args_bind(Args *self, char *type, char *name, void *pointer)
     return;
 }
 
-void args_bindInt(Args *self, char *name,int32_t *intPtr)
+void args_bindInt(Args *self, char *name, int32_t *intPtr)
 {
     args_bind(self, "int", name, intPtr);
 }
@@ -322,11 +328,12 @@ char *getPrintSring(Args *self, char *name, char *valString)
     char *printString = args_getBuff(buffs, 256);
     sprintf(printString, "%s", valString);
     args_setStr(self, printName, printString);
+    char *res = args_getStr(self, printName);
     args_deinit(buffs);
-    return args_getStr(self, printName);
+    return res;
 }
 
-char *getPrintStringFromInt(Args *self, char *name,int32_t val)
+char *getPrintStringFromInt(Args *self, char *name, int32_t val)
 {
     Args *buffs = New_strBuff();
     char *res = NULL;
@@ -354,7 +361,7 @@ char *getPrintStringFromPtr(Args *self, char *name, void *val)
     char *res = NULL;
     char *valString = args_getBuff(buffs, 256);
     uint64_t intVal = (uint64_t)val;
-    sprintf(valString, "0x%lx", intVal);
+    sprintf(valString, "0x%llx", intVal);
     res = getPrintSring(self, name, valString);
     args_deinit(buffs);
     return res;
@@ -374,7 +381,7 @@ char *args_print(Args *self, char *name)
 
     if (strEqu(type, "int"))
     {
-       int32_t val = args_getInt(self, name);
+        int32_t val = args_getInt(self, name);
         res = getPrintStringFromInt(self, name, val);
         goto exit;
     }
@@ -405,8 +412,8 @@ char *args_print(Args *self, char *name)
         char *typeWithoutBind = strsRemovePrefix(buffs, type, bindTypePrefix);
         if (strEqu(typeWithoutBind, "int"))
         {
-           int32_t *valPtr = args_getPtr(self, name);
-           int32_t val = *valPtr;
+            int32_t *valPtr = args_getPtr(self, name);
+            int32_t val = *valPtr;
             res = getPrintStringFromInt(self, name, val);
             goto exit;
         }
@@ -438,7 +445,7 @@ int32_t args_set(Args *self, char *name, char *valStr)
 {
     char *type = args_getType(self, name);
     Args *buffs = New_strBuff();
-   int32_t err = 0;
+    int32_t err = 0;
 
     if (NULL == type)
     {
@@ -449,7 +456,7 @@ int32_t args_set(Args *self, char *name, char *valStr)
 
     if (strEqu("int", type))
     {
-       int32_t val = atoi(valStr);
+        int32_t val = atoi(valStr);
         args_setInt(self, name, val);
         // operation succeed
         err = 0;
@@ -477,8 +484,8 @@ int32_t args_set(Args *self, char *name, char *valStr)
         char *typeWithoutBind = strsRemovePrefix(buffs, type, bindTypePrefix);
         if (strEqu(typeWithoutBind, "int"))
         {
-           int32_t *valPtr = args_getPtr(self, name);
-           int32_t val = atoi(valStr);
+            int32_t *valPtr = args_getPtr(self, name);
+            int32_t val = atoi(valStr);
             *valPtr = val;
             // operation succeed
             err = 0;
@@ -530,7 +537,7 @@ int32_t args_setObjectWithClass(Args *self, char *objName, char *className, void
     return 0;
 }
 
-int32_t args_foreach(Args *self,int32_t (*eachHandle)(Arg *argEach, Args *handleArgs), Args *handleArgs)
+int32_t args_foreach(Args *self, int32_t (*eachHandle)(Arg *argEach, Args *handleArgs), Args *handleArgs)
 {
     LinkNode *nodeNow = self->argLinkList->firstNode;
     while (1)
@@ -540,13 +547,14 @@ int32_t args_foreach(Args *self,int32_t (*eachHandle)(Arg *argEach, Args *handle
         {
             continue;
         }
+        LinkNode *nextNode = nodeNow->nextNode;
         eachHandle(argNow, handleArgs);
 
-        if (NULL == nodeNow->nextNode)
+        if (NULL == nextNode)
         {
             break;
         }
-        nodeNow = nodeNow->nextNode;
+        nodeNow = nextNode;
     }
     return 0;
 }
@@ -578,9 +586,8 @@ void args_init(Args *self, Args *args)
 
 Args *New_args(Args *args)
 {
-    DMEM *mem = DynMemGet(sizeof(Args));
-    Args *self = (void *)(mem->addr);
-    self->mem = mem;
+    Args *self = pikaMalloc(sizeof(Args));
+    self->memSize = sizeof(Args);
     args_init(self, args);
     return self;
 }

@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>01-demo-pikascriptt-stm32f103c8t6-led</TargetName>
+      <TargetName>01-demo-pikascript-stm32f103c8t6-led</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xB</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\pikascript-core;..\pikascript-api</IncludePath>
+              <IncludePath>../Core/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy; ../Drivers/CMSIS/Device/ST/STM32F1xx/Include; ../Drivers/CMSIS/Include; ..\pikascript-core; ..\pikascript-api</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -569,16 +569,6 @@
               <FilePath>..\pikascript-core\method.c</FilePath>
             </File>
             <File>
-              <FileName>MimiClass.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\pikascript-core\MimiClass.c</FilePath>
-            </File>
-            <File>
-              <FileName>MimiObj.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\pikascript-core\MimiObj.c</FilePath>
-            </File>
-            <File>
               <FileName>SysObj.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\pikascript-core\SysObj.c</FilePath>
@@ -587,6 +577,11 @@
               <FileName>TinyObj.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\pikascript-core\TinyObj.c</FilePath>
+            </File>
+            <File>
+              <FileName>PikaObj.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\pikascript-core\PikaObj.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -603,7 +598,7 @@
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.4.0" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/>
         <targetInfos>
-          <targetInfo name="01-demo-pikascriptt-stm32f103c8t6-led"/>
+          <targetInfo name="01-demo-pikascript-stm32f103c8t6-led"/>
         </targetInfos>
       </component>
     </components>

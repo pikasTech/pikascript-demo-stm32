@@ -1,34 +1,22 @@
-#include "MimiObj.h"
+#include "PikaObj.h"
 
-void _UpdateHandle(MimiObj *self)
+void _UpdateHandle(PikaObj *self)
 {
     // override the handle function here
 }
 
-void _beforDinit(MimiObj *self)
+void _beforDinit(PikaObj *self)
 {
     /* override in user code */
 }
 
-MimiObj *New_TinyObj(Args *args)
+PikaObj *New_TinyObj(Args *args)
 {
-    /* request memory */
-    DMEM *mem = DynMemGet(sizeof(MimiObj));
-    if (NULL == mem)
-    {
-        printf("[error] memory is empty!");
-        while (1)
-            ;
-    }
-    MimiObj *self = (void *)(mem->addr);
-    self->mem = mem;
+    PikaObj *self = pikaMalloc(sizeof(PikaObj));
+    self->memSize = sizeof(PikaObj);
 
     /* List */
     self->attributeList = New_args(NULL);
-
-    /* override */
-    self->_updateHandle = _UpdateHandle;
-    self->_beforDinit = _beforDinit;
 
     /* attribute */
     obj_setPtr(self, "__context", self);

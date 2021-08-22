@@ -19,9 +19,6 @@ class MemoryChecker(TinyObj):
     # check memory used max
     def max():
         pass
-    # check the size of memory pool
-    def size():
-        pass
 
 class MyRoot(BaseObj):
     led = LED()

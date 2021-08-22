@@ -1,17 +1,17 @@
-#include "MimiObj.h"
+#include "PikaObj.h"
 #include "TinyObj.h"
 #include "BaseObj.h"
 #include "dataMemory.h"
 #include "dataString.h"
 #include "dataStrs.h"
 
-static void *getClassPtr(MimiObj *classObj, char *classPath)
+static void *getClassPtr(PikaObj *classObj, char *classPath)
 {
     char *ptrPath = classPath;
     return obj_getPtr(classObj, ptrPath);
 }
 
-int32_t sysObj_setObjbyClassAndPtr(MimiObj *self, char *objName, char *className, void *newFunPtr)
+int32_t sysObj_setObjbyClassAndPtr(PikaObj *self, char *objName, char *className, void *newFunPtr)
 {
     /* class means subprocess init */
     Args *buffs = New_strBuff();
@@ -26,11 +26,11 @@ int32_t sysObj_setObjbyClassAndPtr(MimiObj *self, char *objName, char *className
     return 0;
 }
 
-int32_t sysObj_setObjbyClass(MimiObj *self, char *objName, char *classPath)
+int32_t sysObj_setObjbyClass(PikaObj *self, char *objName, char *classPath)
 {
     /* class means subprocess init */
     Args *buffs = New_strBuff();
-    MimiObj *classHost = obj_getObj(self, "__classLoader", 0);
+    PikaObj *classHost = obj_getObj(self, "__classLoader", 0);
     void *newFunPtr = getClassPtr(classHost, classPath);
 
     /* class means subprocess init */
@@ -43,10 +43,10 @@ int32_t sysObj_setObjbyClass(MimiObj *self, char *objName, char *classPath)
     return 0;
 }
 
-static int32_t storeClassInfo(MimiObj *self, Args *buffs, char *classPath, void *classPtr)
+static int32_t storeClassInfo(PikaObj *self, Args *buffs, char *classPath, void *classPtr)
 {
     int32_t res = 0;
-    MimiObj *classHost = obj_getObj(self, classPath, 1);
+    PikaObj *classHost = obj_getObj(self, classPath, 1);
     if (NULL == classHost)
     {
         res = 1;
@@ -61,33 +61,43 @@ exit:
     return res;
 }
 
-int32_t obj_import(MimiObj *self, char *className, void *classPtr)
+int32_t obj_import(PikaObj *self, char *className, NewFun classPtr)
 {
-    MimiObj *classLoader = obj_getObj(self, "__classLoader", 0);
+    PikaObj *classLoader = obj_getObj(self, "__classLoader", 0);
     Args *buffs = New_args(NULL);
     int32_t res = storeClassInfo(classLoader, buffs, className, classPtr);
     args_deinit(buffs);
     return res;
 }
 
-int32_t obj_newObj(MimiObj *self, char *objPath, char *classPath)
+int32_t obj_newObj(PikaObj *self, char *objPath, char *classPath)
 {
-    MimiObj *classLoader = obj_getObj(self, "__classLoader", 0);
+    PikaObj *classLoader = obj_getObj(self, "__classLoader", 0);
     Args *buffs = New_args(NULL);
+    int res = 0;
     void *NewObjPtr = getClassPtr(classLoader, classPath);
     if (NULL == NewObjPtr)
     {
-        return 1;
-        args_deinit(buffs);
+        res = 1;
+        goto exit;
     }
-    MimiObj *objHost = obj_getObj(self, objPath, 1);
+    PikaObj *objHost = obj_getObj(self, objPath, 1);
+    if (NULL == objHost)
+    {
+        res = 2;
+        goto exit;
+    }
     char *objName = strsGetLastToken(buffs, objPath, '.');
     sysObj_setObjbyClassAndPtr(objHost, objName, classPath, NewObjPtr);
+    res = 0;
+    goto exit;
+
+    exit:
     args_deinit(buffs);
-    return 0;
+    return res;
 }
 
-static void init_baseObj(MimiObj *self, Args *args)
+static void init_baseObj(PikaObj *self, Args *args)
 {
     /* attribute */
     /* object */
@@ -105,9 +115,9 @@ static void init_baseObj(MimiObj *self, Args *args)
     /* override */
 }
 
-MimiObj *New_BaseObj(Args *args)
+PikaObj *New_BaseObj(Args *args)
 {
-    MimiObj *self = New_TinyObj(args);
+    PikaObj *self = New_TinyObj(args);
     init_baseObj(self, args);
     return self;
 }

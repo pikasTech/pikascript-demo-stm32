@@ -5,14 +5,13 @@ typedef struct Class_linkNode LinkNode;
 struct Class_linkNode
 {
     /* attribute */
-    DMEM *mem;
     LinkNode *priorNode;
     LinkNode *nextNode;
     int64_t id;
+    uint16_t memSize;
 
     /* virtual operation */
     void (*_contantDinit)(void *contant);
-
     /* object */
     void *contant;
 };

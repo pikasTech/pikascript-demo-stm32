@@ -6,19 +6,16 @@
 typedef struct Class_link Link;
 struct Class_link
 {
-    /* attribute */
-    DMEM *mem;
     LinkNode *firstNode;
     int64_t TopId;
- 
-    /* virtual operation */
-
-    /* object */
+    uint16_t memSize;
 };
+
+typedef void (*contantDeinitFun)(void *contant);
 
 void link_deinit(Link *self);
 void link_init(Link *self, void *args);
-void link_addNode(Link *self, void *contant, void (*_contantDinit)(void *contant));
+void link_addNode(Link *self, void *contant, contantDeinitFun _contantDinit);
 void link_removeNode(Link *self, void *contant);
 LinkNode *link_getNode(Link *self, int64_t id);
 int32_t link_getSize(Link *self);

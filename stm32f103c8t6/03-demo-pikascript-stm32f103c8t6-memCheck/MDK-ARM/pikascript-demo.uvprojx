@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xB</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\pikascript-core;..\pikascript-api</IncludePath>
+              <IncludePath>../Core/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy; ../Drivers/CMSIS/Device/ST/STM32F1xx/Include; ../Drivers/CMSIS/Include; ..\pikascript-core; ..\pikascript-api</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -555,16 +555,6 @@
               <FilePath>..\pikascript-core\method.c</FilePath>
             </File>
             <File>
-              <FileName>MimiClass.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\pikascript-core\MimiClass.c</FilePath>
-            </File>
-            <File>
-              <FileName>MimiObj.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\pikascript-core\MimiObj.c</FilePath>
-            </File>
-            <File>
               <FileName>SysObj.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\pikascript-core\SysObj.c</FilePath>
@@ -573,6 +563,11 @@
               <FileName>TinyObj.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\pikascript-core\TinyObj.c</FilePath>
+            </File>
+            <File>
+              <FileName>PikaObj.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\pikascript-core\PikaObj.c</FilePath>
             </File>
           </Files>
         </Group>

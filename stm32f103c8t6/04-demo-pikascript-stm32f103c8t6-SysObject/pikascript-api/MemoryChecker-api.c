@@ -7,22 +7,17 @@
 #include <stdlib.h>
 #include "BaseObj.h"
 
-void MemoryChecker_maxMethod(MimiObj *self, Args *args){
+void MemoryChecker_maxMethod(PikaObj *self, Args *args){
     MemoryChecker_max(self);
 }
 
-void MemoryChecker_nowMethod(MimiObj *self, Args *args){
+void MemoryChecker_nowMethod(PikaObj *self, Args *args){
     MemoryChecker_now(self);
 }
 
-void MemoryChecker_sizeMethod(MimiObj *self, Args *args){
-    MemoryChecker_size(self);
-}
-
-MimiObj *New_MemoryChecker(Args *args){
-    MimiObj *self = New_TinyObj(args);
+PikaObj *New_MemoryChecker(Args *args){
+    PikaObj *self = New_TinyObj(args);
     class_defineMethod(self, "max()", MemoryChecker_maxMethod);
     class_defineMethod(self, "now()", MemoryChecker_nowMethod);
-    class_defineMethod(self, "size()", MemoryChecker_sizeMethod);
     return self;
 }
