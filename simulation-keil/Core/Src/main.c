@@ -147,7 +147,7 @@ int main(void)
     Args *resArgs = obj_runDirect(pikaMain, inputBuff);
 
     /* get system output of mimiScript*/
-    char *sysOut = args_getStr(resArgs, "sysOut");
+    char *sysOut = args_getSysOut(resArgs);
 
     if (NULL != sysOut)
     {
