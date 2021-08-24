@@ -131,7 +131,7 @@ int main(void)
   //obj_run(root, "uart.setName('com2')");
   //obj_run(root, "uart1.send('My name is:')");
   //obj_run(root, "uart1.printName()");
-  printf("init over");
+  printf("init over\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -139,17 +139,17 @@ int main(void)
   while (1)
   {
     static uint32_t r_mainloop_ncnt;
-    printf("mainloop=%d\n", r_mainloop_ncnt++);
+    //printf("mainloop=%d\n", r_mainloop_ncnt++);
     /* get user input */
     fgets(inputBuff, sizeof(inputBuff), stdin);
-    printf(">>> %s\r\n", inputBuff);
+    printf(">>> %s", inputBuff);
     /* run mimiScript and get res */
     Args *resArgs = obj_runDirect(pikaMain, inputBuff);
 
     /* get system output of mimiScript*/
     char *sysOut = args_getSysOut(resArgs);
 
-    if (NULL != sysOut)
+    if (!strEqu(sysOut, ""))
     {
       /* print out the system output */
       printf("%s\r\n", sysOut);
