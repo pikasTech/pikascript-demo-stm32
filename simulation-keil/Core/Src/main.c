@@ -123,7 +123,7 @@ int main(void)
   /* user input buff */
   printf("hello world\n");
   char inputBuff[256] = {0};
-  PikaObj *pikaMain = newRootObj("root", New_PikaMain);
+  PikaObj *pikaMain = newRootObj("pikaMain", New_PikaMain);
 
   obj_run(pikaMain, "uart.setName('com1')");
   obj_run(pikaMain, "uart.send('My name is:')");
