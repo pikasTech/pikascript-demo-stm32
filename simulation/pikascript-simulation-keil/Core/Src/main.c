@@ -24,9 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "MimiObj.h"
-#include "MyRoot.h"
-#include "SysObj.h"
+#include "PikaObj.h"
+#include "PikaMain.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,36 +57,35 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void LED_off(MimiObj *self)
+void LED_off(PikaObj *self)
 {
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 }
-void LED_on(MimiObj *self)
+void LED_on(PikaObj *self)
 {
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
-}
-
-
-void Uart_printName(MimiObj *self)
-{
-		char *name = obj_getStr(self, "name");
-		if(NULL == name)
-		{
-			printf("[error] Uart: can't find name.\r\n");
-			return;
-		}
-		
-		printf("%s\r\n", name);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 }
 
-void Uart_setName(MimiObj *self, char * name)
+void Uart_printName(PikaObj *self)
 {
-		obj_setStr(self, "name", name);
+  char *name = obj_getStr(self, "name");
+  if (NULL == name)
+  {
+    printf("[error] Uart: can't find name.\r\n");
+    return;
+  }
+
+  printf("%s\r\n", name);
 }
 
-void Uart_send(MimiObj *self, char * data)
+void Uart_setName(PikaObj *self, char *name)
 {
-		printf("[uart1]: %s\r\n", data);
+  obj_setStr(self, "name", name);
+}
+
+void Uart_send(PikaObj *self, char *data)
+{
+  printf("[uart1]: %s\r\n", data);
 }
 
 /* USER CODE END 0 */
@@ -122,43 +120,43 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-	/* user input buff */
-	printf("hello world\n");
-	char inputBuff[256] = {0};
-	MimiObj *root = newRootObj("root",New_MyRoot);
-	
-	obj_run(root, "uart.setName('com1')");
-	obj_run(root, "uart.send('My name is:')");
-	obj_run(root, "uart.printName()");
-	//obj_run(root, "uart.setName('com2')");
-	//obj_run(root, "uart1.send('My name is:')");
-	//obj_run(root, "uart1.printName()");	
-	printf("init over");
+  /* user input buff */
+  printf("hello world\n");
+  char inputBuff[256] = {0};
+  PikaObj *pikaMain = newRootObj("root", New_PikaMain);
+
+  obj_run(pikaMain, "uart.setName('com1')");
+  obj_run(pikaMain, "uart.send('My name is:')");
+  obj_run(pikaMain, "uart.printName()");
+  //obj_run(root, "uart.setName('com2')");
+  //obj_run(root, "uart1.send('My name is:')");
+  //obj_run(root, "uart1.printName()");
+  printf("init over");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-        static uint32_t r_mainloop_ncnt;
-        printf("mainloop=%d\n",r_mainloop_ncnt++);
-		/* get user input */
-		fgets(inputBuff, sizeof(inputBuff), stdin);
-        printf(">>> %s\r\n", inputBuff);
-		/* run mimiScript and get res */
-		Args *resArgs = obj_runDirect(root, inputBuff);
+    static uint32_t r_mainloop_ncnt;
+    printf("mainloop=%d\n", r_mainloop_ncnt++);
+    /* get user input */
+    fgets(inputBuff, sizeof(inputBuff), stdin);
+    printf(">>> %s\r\n", inputBuff);
+    /* run mimiScript and get res */
+    Args *resArgs = obj_runDirect(pikaMain, inputBuff);
 
-		/* get system output of mimiScript*/
-		char *sysOut = args_getStr(resArgs, "sysOut");
+    /* get system output of mimiScript*/
+    char *sysOut = args_getStr(resArgs, "sysOut");
 
-		if (NULL != sysOut)
-		{
-			/* print out the system output */
-			printf("%s\r\n", sysOut);
-		}
+    if (NULL != sysOut)
+    {
+      /* print out the system output */
+      printf("%s\r\n", sysOut);
+    }
 
-		/* deinit the res */
-		args_deinit(resArgs);
+    /* deinit the res */
+    args_deinit(resArgs);
 
     /* USER CODE END WHILE */
 
@@ -192,8 +190,7 @@ void SystemClock_Config(void)
   }
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -224,7 +221,7 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
