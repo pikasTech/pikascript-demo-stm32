@@ -112,3 +112,4 @@ void PikaStdLib_SysObj_type(PikaObj *self, char *argPath)
     }
     obj_setSysOut(self, arg_getType(arg));
 }
+

@@ -568,24 +568,34 @@
           <GroupName>pikascript-api</GroupName>
           <Files>
             <File>
-              <FileName>PikaStdLib_SysObj-api.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\pikascript\pikascript-api\PikaStdLib_SysObj-api.c</FilePath>
-            </File>
-            <File>
               <FileName>PikaMain-api.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\pikascript\pikascript-api\PikaMain-api.c</FilePath>
             </File>
             <File>
-              <FileName>LED-api.c</FileName>
+              <FileName>Device_LED-api.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\pikascript\pikascript-api\LED-api.c</FilePath>
+              <FilePath>..\pikascript\pikascript-api\Device_LED-api.c</FilePath>
             </File>
             <File>
-              <FileName>Uart-api.c</FileName>
+              <FileName>Device_Uart-api.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\pikascript\pikascript-api\Uart-api.c</FilePath>
+              <FilePath>..\pikascript\pikascript-api\Device_Uart-api.c</FilePath>
+            </File>
+            <File>
+              <FileName>pikaScript.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\pikascript\pikascript-api\pikaScript.c</FilePath>
+            </File>
+            <File>
+              <FileName>PikaStdLib_MemChecker-api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\pikascript\pikascript-api\PikaStdLib_MemChecker-api.c</FilePath>
+            </File>
+            <File>
+              <FileName>PikaStdLib_SysObj-api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\pikascript\pikascript-api\PikaStdLib_SysObj-api.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -596,6 +606,11 @@
               <FileName>PikaStdLib_SysObj.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\pikascript\pikascript-lib\PikaStdLib\PikaStdLib_SysObj.c</FilePath>
+            </File>
+            <File>
+              <FileName>PikaStdLib_MemChecker.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\pikascript\pikascript-lib\PikaStdLib\PikaStdLib_MemChecker.c</FilePath>
             </File>
           </Files>
         </Group>

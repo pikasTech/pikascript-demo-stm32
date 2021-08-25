@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 void args_deinit(Args *self)
 {
@@ -15,12 +16,6 @@ void args_deinit(Args *self)
     self = NULL;
 }
 
-char *getDefaultName(Args *self, char *strOut)
-{
-    sprintf((char *)strOut, "arg%d", (int)self->argLinkList->TopId);
-    return strOut;
-}
-
 char *args_getStrByIndex(Args *self, int32_t index)
 {
     Arg *arg = args_getArgByIndex(self, index);
@@ -28,13 +23,13 @@ char *args_getStrByIndex(Args *self, int32_t index)
     {
         return NULL;
     }
-    return (char *)arg_getContant(arg);
+    return (char *)arg_getcontent(arg);
 }
 
 int32_t args_setStrWithDefaultName(Args *self, char *strIn)
 {
     Args *buffs = New_strBuff();
-    char *name = getDefaultName(self, args_getBuff(buffs, 256));
+    char *name = strsFormat(buffs, "arg%d", (int)self->argLinkList->TopId);
     args_setStr(self, name, strIn);
     args_deinit(buffs);
     return 0;
@@ -43,7 +38,7 @@ int32_t args_setStrWithDefaultName(Args *self, char *strIn)
 int32_t args_setFloatWithDefaultName(Args *self, float argFloat)
 {
     Args *buffs = New_strBuff();
-    char *name = getDefaultName(self, args_getBuff(buffs, 256));
+    char *name = strsFormat(buffs, "arg%d", (int)self->argLinkList->TopId);
     args_setFloat(self, name, argFloat);
     args_deinit(buffs);
     return 0;
@@ -114,15 +109,15 @@ void setArgDirect(Args *self, Arg *arg)
 {
     link_addNode(self->argLinkList,
                  arg,
-                 (contantDeinitFun)arg_deinit);
+                 (contentDeinitFun)arg_deinit);
 }
 
 char *args_getBuff(Args *self, int32_t size)
 {
     Arg *argNew = New_arg(NULL);
-    arg_newContant(argNew, size + 1);
+    arg_newcontent(argNew, size + 1);
     setArgDirect(self, argNew);
-    return (char *)arg_getContant(argNew);
+    return (char *)arg_getcontent(argNew);
 }
 
 char *args_getStr(Args *self, char *name)
@@ -132,11 +127,11 @@ char *args_getStr(Args *self, char *name)
     {
         return NULL;
     }
-    if (NULL == arg_getContant(arg))
+    if (NULL == arg_getcontent(arg))
     {
         return NULL;
     }
-    return (char *)arg_getContant(arg);
+    return (char *)arg_getcontent(arg);
 }
 
 int32_t args_setInt(Args *self, char *name, int64_t int64In)
@@ -197,7 +192,7 @@ Arg *args_getArgByIndex(Args *self, int32_t index)
     {
         return NULL;
     }
-    arg = node->contant;
+    arg = node->content;
     return arg;
 }
 
@@ -254,7 +249,7 @@ int32_t updateArg(Args *self, Arg *argNew)
         return 1;
         // type do not match
     }
-    arg_setContant(argOld, arg_getContant(argNew), argNew->contentSize);
+    arg_setcontent(argOld, arg_getcontent(argNew), argNew->contentSize);
     arg_deinit(argNew);
     return 0;
 }
@@ -280,7 +275,7 @@ Arg *args_getArg(Args *self, char *name)
     }
     while (1)
     {
-        Arg *arg = nodeNow->contant;
+        Arg *arg = nodeNow->content;
         if (strEqu(name, arg_getName(arg)))
         {
             return arg;
@@ -325,8 +320,7 @@ char *getPrintSring(Args *self, char *name, char *valString)
 {
     Args *buffs = New_strBuff();
     char *printName = strsAppend(buffs, "[printBuff]", name);
-    char *printString = args_getBuff(buffs, 256);
-    sprintf(printString, "%s", valString);
+    char *printString = strsCopy(buffs, valString);
     args_setStr(self, printName, printString);
     char *res = args_getStr(self, printName);
     args_deinit(buffs);
@@ -337,8 +331,7 @@ char *getPrintStringFromInt(Args *self, char *name, int32_t val)
 {
     Args *buffs = New_strBuff();
     char *res = NULL;
-    char *valString = args_getBuff(buffs, 256);
-    sprintf(valString, "%d", val);
+    char *valString = strsFormat(buffs, "%d", val);
     res = getPrintSring(self, name, valString);
     args_deinit(buffs);
     return res;
@@ -348,8 +341,7 @@ char *getPrintStringFromFloat(Args *self, char *name, float val)
 {
     Args *buffs = New_strBuff();
     char *res = NULL;
-    char *valString = args_getBuff(buffs, 256);
-    sprintf(valString, "%f", val);
+    char *valString = strsFormat(buffs, "%f", val);
     res = getPrintSring(self, name, valString);
     args_deinit(buffs);
     return res;
@@ -359,9 +351,8 @@ char *getPrintStringFromPtr(Args *self, char *name, void *val)
 {
     Args *buffs = New_strBuff();
     char *res = NULL;
-    char *valString = args_getBuff(buffs, 256);
     uint64_t intVal = (uint64_t)val;
-    sprintf(valString, "0x%llx", intVal);
+    char *valString = strsFormat(buffs, "0x%llx", intVal);
     res = getPrintSring(self, name, valString);
     args_deinit(buffs);
     return res;
@@ -542,7 +533,7 @@ int32_t args_foreach(Args *self, int32_t (*eachHandle)(Arg *argEach, Args *handl
     LinkNode *nodeNow = self->argLinkList->firstNode;
     while (1)
     {
-        Arg *argNow = nodeNow->contant;
+        Arg *argNow = nodeNow->content;
         if (NULL == argNow)
         {
             continue;

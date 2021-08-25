@@ -1,20 +1,16 @@
-from PikaObj import *
-import PikaStdLib
+from PikaObj import  *
+import Device
+import PikaStdLib 
 
-class LED(TinyObj):
-    def on():
-        pass
-    def off():
-        pass
+led = Device.LED()
+uart = Device.Uart()
+mem = PikaStdLib.MemChecker()
 
-class Uart(TinyObj):
-    def send(data:str):
-        pass
-    def setName(name:str):
-        pass
-    def printName():
-        pass
-
-class PikaMain(PikaStdLib.SysObj):
-    led = LED()
-    uart = Uart()
+print('hello wrold')
+uart.setName('com1')
+uart.send('My name is:')
+uart.printName()
+print('mem used max:')
+mem.max()
+print('mem used now:')
+mem.now()

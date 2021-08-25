@@ -24,8 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "PikaObj.h"
-#include "PikaMain.h"
+#include "pikaScript.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,16 +56,16 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void LED_off(PikaObj *self)
+void Device_LED_off(PikaObj *self)
 {
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 }
-void LED_on(PikaObj *self)
+void Device_LED_on(PikaObj *self)
 {
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 }
 
-void Uart_printName(PikaObj *self)
+void Device_Uart_printName(PikaObj *self)
 {
   char *name = obj_getStr(self, "name");
   if (NULL == name)
@@ -78,12 +77,12 @@ void Uart_printName(PikaObj *self)
   printf("%s\r\n", name);
 }
 
-void Uart_setName(PikaObj *self, char *name)
+void Device_Uart_setName(PikaObj *self, char *name)
 {
   obj_setStr(self, "name", name);
 }
 
-void Uart_send(PikaObj *self, char *data)
+void Device_Uart_send(PikaObj *self, char *data)
 {
   printf("[uart1]: %s\r\n", data);
 }
@@ -120,22 +119,18 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  /* user input buff */
-  printf("hello world\n");
-  char inputBuff[256] = {0};
-  PikaObj *pikaMain = newRootObj("pikaMain", New_PikaMain);
-
-  obj_run(pikaMain, "uart.setName('com1')");
-  obj_run(pikaMain, "uart.send('My name is:')");
-  obj_run(pikaMain, "uart.printName()");
-  //obj_run(root, "uart.setName('com2')");
-  //obj_run(root, "uart1.send('My name is:')");
-  //obj_run(root, "uart1.printName()");
-  printf("init over\r\n");
+	
+	
+  PikaObj *pikaMain = pikaScriptInit();
+	
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  /* user input buff */
+	
+	char inputBuff[256] = {0};
   while (1)
   {
     static uint32_t r_mainloop_ncnt;

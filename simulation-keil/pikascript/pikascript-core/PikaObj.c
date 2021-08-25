@@ -3,6 +3,7 @@
 #include "dataMemory.h"
 #include "dataString.h"
 #include "dataStrs.h"
+#include <stdarg.h>
 
 int32_t deinitEachSubObj(Arg *argEach, Args *handleArgs)
 {
@@ -333,12 +334,12 @@ char *obj_getClassPath(PikaObj *objHost, Args *buffs, char *objName)
 
 void *getNewObjFunByClass(PikaObj *obj, char *classPath)
 {
-    PikaObj *classHost = args_getPtr(obj->attributeList, "__classLoader");
-    if (NULL == classHost)
+    PikaObj *classLoader = args_getPtr(obj->attributeList, "__classLoader");
+    if (NULL == classLoader)
     {
         return NULL;
     }
-    void *(*newObjFun)(Args * initArgs) = args_getPtr(classHost->attributeList, classPath);
+    void *(*newObjFun)(Args * initArgs) = args_getPtr(classLoader->attributeList, classPath);
     return newObjFun;
 }
 
@@ -361,10 +362,10 @@ PikaObj *newRootObj(char *name, NewFun newObjFun)
 
 static void removeClassLoader(PikaObj *obj)
 {
-    PikaObj *classObj = args_getPtr(obj->attributeList, "__classLoader");
-    if (NULL != classObj)
+    PikaObj *classLoader = args_getPtr(obj->attributeList, "__classLoader");
+    if (NULL != classLoader)
     {
-        obj_deinit(classObj);
+        obj_deinit(classLoader);
         args_removeArg(obj->attributeList, "__classLoader");
     }
 }
@@ -784,7 +785,7 @@ static char *getCleanCmd(Args *buffs, char *cmd)
     int32_t isInStr = 0;
     for (int32_t i = 0; i < strGetSize(cmd); i++)
     {
-        if ('\'' == cmd[i])
+        if ('\'' == cmd[i] || '\"' == cmd[i])
         {
             isInStr = !isInStr;
         }
@@ -983,8 +984,8 @@ void obj_run(PikaObj *self, char *cmd)
 {
     /* safe, stop when error occord and error info would be print32_t */
     Args *res = obj_runDirect(self, cmd);
-    char *sysOut = args_getStr(res, "__sysOut");
-    if (NULL != sysOut)
+    char *sysOut = args_getSysOut(res);
+    if (!strEqu("", sysOut))
     {
         printf("%s\r\n", sysOut);
     }
@@ -1046,4 +1047,14 @@ char *args_getSysOut(Args *args)
 void args_setSysOut(Args *args, char *str)
 {
     args_setStr(args, "__sysOut", str);
+}
+
+void obj_sysPrintf(PikaObj *self, char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    char sysOut[128] = {0};
+    vsprintf(sysOut, fmt, args);
+    obj_setSysOut(self, sysOut);
+    va_end(args);
 }
