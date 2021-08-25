@@ -56,36 +56,9 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void Device_LED_off(PikaObj *self)
-{
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
-}
-void Device_LED_on(PikaObj *self)
-{
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
-}
 
-void Device_Uart_printName(PikaObj *self)
-{
-  char *name = obj_getStr(self, "name");
-  if (NULL == name)
-  {
-    printf("[error] Uart: can't find name.\r\n");
-    return;
-  }
 
-  printf("%s\r\n", name);
-}
 
-void Device_Uart_setName(PikaObj *self, char *name)
-{
-  obj_setStr(self, "name", name);
-}
-
-void Device_Uart_send(PikaObj *self, char *data)
-{
-  printf("[uart1]: %s\r\n", data);
-}
 
 /* USER CODE END 0 */
 
